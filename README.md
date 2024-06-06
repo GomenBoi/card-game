@@ -6,3 +6,6 @@
 ## Requirements
 - [Requirements Brief](docs/RequirementsBrief.md)
 
+## Specifications
+![Class Diagram UML](assets/ClassDiagramSpecification.png)
+
