@@ -13,3 +13,4 @@
 - Play continues until each player has played all 52 of their cards. At the end of the game, the player with the most points wins.
 - UI must display the current hand of a player and the points they have won so far.
 - If player is AI, they must be able to make the best move based on all possible outcomes.
+- There should be an option for a spectator for be notified of what card has been played.
