@@ -1,0 +1,15 @@
+# Requirements Brief
+- You need to provide a design for a program to allow two or more players to play a card game on the computer. 
+- Each player may be either a human or an AI. 
+- Assume that each player has their own deck of 52 cards, numbered 1 to 52. 
+- At the beginning of the game, each deck is shuffled. 
+- Each player has a ‘hand’ of cards, a collection of cards that they are ‘holding’ and are ready to play. 
+- Each player will then keep drawing from their deck (moving the top card from their ‘deck’ into their ‘hand’) until they have 5 cards in their ‘hand’.
+- Starting at player 1, each player will play one card from their ‘hand’ onto the virtual ‘table’, in order, first player 1, then player 2, player 3, etc. 
+- Whoever plays the highest numbered card wins the ‘round’, gets a point, and the ‘round’ ends - the played cards are removed from play. 
+- Each player then draws another card from their deck to their hand, so that they again have 5 cards, as long as there are cards left in their deck, otherwise they just play with the cards in hand. 
+- The player who won the previous round goes first in the next round, then each other player plays in turn, keeping the same order of player numbers, and returning to player 1 after the highest numbered player. 
+- E.g., with 5 players, if player 3 started, the player order would be 3, 4, 5, 1, 2. 
+- Play continues until each player has played all 52 of their cards. At the end of the game, the player with the most points wins.
+- UI must display the current hand of a player and the points they have won so far.
+- If player is AI, they must be able to make the best move based on all possible outcomes.
