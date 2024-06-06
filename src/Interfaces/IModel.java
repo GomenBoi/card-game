@@ -5,8 +5,10 @@ import java.util.ArrayList;
 
 public interface IModel
 {
-    public abstract void initialise(int numPlayers);
-    public ArrayList<Player> getPlayers();
-    public void setCurrentPlayer(int playerNum);
-    public int getCurrentPlayer();
+    void initialise(int numPlayers);
+    ArrayList<Player> getPlayers();
+    void setCurrentPlayer(int playerNum);
+    int getCurrentPlayer();
+    void setFinished(boolean finished);
+    boolean hasFinished();
 }
