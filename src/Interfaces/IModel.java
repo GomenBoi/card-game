@@ -11,4 +11,6 @@ public interface IModel
     int getCurrentPlayer();
     void setFinished(boolean finished);
     boolean hasFinished();
+    void setIterations(int iterations);
+    int getIterations();
 }

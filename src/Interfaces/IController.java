@@ -6,5 +6,4 @@ public interface IController
     void startup();
     void update();
     void playCard(int playerNum, int handNum);
-    void reorderPlayers(int startingPlayer);
 }
