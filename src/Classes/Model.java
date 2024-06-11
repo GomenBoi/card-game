@@ -9,7 +9,7 @@ public class Model implements IModel
     private ArrayList<Player> players;
     private int currentPlayer;
     private boolean gameFinished;
-    private int listPosition;
+    private int updateIterations;
 
     public void initialise(int numPlayers)
     {
@@ -22,7 +22,6 @@ public class Model implements IModel
                 this.players.add(player);
             }
 
-            this.currentPlayer = 1;
         } else {
             System.out.println("Attempt to play game with 1 or less people.");
         }
@@ -31,6 +30,14 @@ public class Model implements IModel
     public ArrayList<Player> getPlayers()
     {
        return players;
+    }
+
+    public int getIterations() {
+        return updateIterations;
+    }
+
+    public void setIterations(int iterations) {
+        this.updateIterations = iterations;
     }
 
     public void setCurrentPlayer(int playerNum)
