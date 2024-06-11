@@ -1,5 +1,6 @@
 package Classes;
 
+import java.util.Collections;
 import java.util.EmptyStackException;
 
 public class Player
@@ -7,29 +8,42 @@ public class Player
     public Card currentCardPlayed;
     public int playerPoints;
     public int playerID;
-    public Deck deck;
-    public Hand hand;
+    private Deck deck;
+    private Hand hand;
 
     public Player(int index) {
         this.playerID = index;
-        this.initialise();
+        this.initialise(52, 5);
     }
 
-    public void initialise() {
-        Deck deck = new Deck(52);
-        Hand hand = new Hand(5);
-        playerPoints = 0;
-        currentCardPlayed = null;
+    public Player(int index, int deckSize, int handSize) {
+        this.playerID = index;
+        this.initialise(deckSize, handSize);
+    }
+
+    public void initialise(int deckSize, int handSize) {
+        this.deck = new Deck(deckSize);
+        this.hand = new Hand(handSize);
+        this.playerPoints = 0;
+        this.currentCardPlayed = null;
     }
 
     public void drawCard() {
         try {
             Card card = deck.pop();
-            if (hand.cards.size() < 5) {
+            if (hand.size() < 5) {
                 hand.addCard(card);
             }
         } catch (EmptyStackException e) {
             System.out.println("Empty deck, cannot draw a card.");
         }
+    }
+
+    public Deck getDeck() {
+        return this.deck;
+    }
+
+    public Hand getHand() {
+        return this.hand;
     }
 }
