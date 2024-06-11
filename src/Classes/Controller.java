@@ -19,17 +19,23 @@ public class Controller implements IController
 
     public void startup()
     {
+        // Gets all the players from the model
         ArrayList<Player> players = this.model.getPlayers();
 
+        // Loops over every player to initialise their deck and hand
+        // Shuffles the deck and fills up the player's hand with the max number of cards allowed
         for (Player player : players) {
-            player.initialise();
-            player.deck.shuffle();
-            while (player.hand.cards.size() < player.hand.maxHandSize) {
+            player.initialise(52, 5);
+            Deck deck = player.getDeck();
+            Hand hand = player.getHand();
+            deck.shuffle();
+            while (hand.size() < hand.maxHandSize) {
                 player.drawCard();
             }
         }
 
-        this.model.setCurrentPlayer(1);
+        // Sets the current player to the first player, sets the finished flag start the game and refreshes the UI
+        this.model.setCurrentPlayer(0);
         this.model.setFinished(false);
 
         this.view.refreshView();
@@ -38,13 +44,15 @@ public class Controller implements IController
     public void update()
     {
         ArrayList<Player> players = this.model.getPlayers();
-        int currentPlayerID = this.model.getCurrentPlayer();
 
         boolean isFinished = true;
 
         for (Player player : players) {
-            if (!player.hand.cards.isEmpty() || !player.deck.cards.isEmpty()) {
+            Deck deck = player.getDeck();
+            Hand hand = player.getHand();
+            if (!hand.isEmpty() || !deck.isEmpty()) {
                 isFinished = false;
+                break;
             }
         }
 
@@ -63,7 +71,9 @@ public class Controller implements IController
                 view.feedbackToUser(player.playerID, "Player " + highestPlayerID + " has won with a total number of " + highestPoints + " points.");
             }
         } else {
-            if (currentPlayerID == players.size() - 1) {
+            if (model.getIterations() >= players.size()) {
+                model.setIterations(0);
+
                 int highestNumber = 0;
                 int highestPlayerID = 0;
                 for (Player player : players) {
@@ -73,9 +83,16 @@ public class Controller implements IController
                     }
                 }
                 players.get(highestPlayerID).playerPoints += 1;
-                reorderPlayers(highestPlayerID);
+                model.setCurrentPlayer(highestPlayerID);
+
+                for (Player player: players) {
+                    player.drawCard();
+                    player.currentCardPlayed = null;
+                }
             }
         }
+
+        view.refreshView();
     }
 
     public void playCard(int playerNum, int handNum)
@@ -92,18 +109,31 @@ public class Controller implements IController
         }
 
         Player player = players.get(playerNum);
+        Hand hand = player.getHand();
 
-        if (!(handNum >= 1 && handNum <= player.hand.maxHandSize)) {
+        if (!(handNum >= 0 && handNum < hand.maxHandSize)) {
             return;
         }
 
-        player.currentCardPlayed = player.hand.removeCard(handNum);
+        if (hand.getCard(handNum) == null) {
+            return;
+        }
+
+        player.currentCardPlayed = hand.removeCard(handNum);
+        model.setCurrentPlayer((currentPlayer + 1) % players.size());
+        model.setIterations(model.getIterations() + 1);
 
         this.update();
     }
 
-    public void reorderPlayers(int startingPlayer)
-    {
+    public static void main(String[] args) {
+        IController controller = new Controller();
+        IModel model = new Model();
+        IView view = new View();
 
+        model.initialise(5);
+        controller.initialise(model, view);
+        view.initialise(model, controller);
+        controller.startup();
     }
 }
