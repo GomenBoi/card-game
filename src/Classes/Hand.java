@@ -2,38 +2,31 @@ package Classes;
 
 import java.util.ArrayList;
 
-public class Hand
+public class Hand extends ArrayList<Card>
 {
-    public ArrayList<Card> cards;
     public int maxHandSize;
 
     public Hand(int handSize) {
-        this.cards = new ArrayList<>();
-
-        for (int index = 0; index < handSize; index++) {
-            Card card = new Card(index);
-            this.cards.add(card);
-        }
-
+        super();
         this.maxHandSize = handSize;
     }
 
     public void addCard(Card card) {
-        if (this.cards.size() < this.maxHandSize) {
-            this.cards.add(card);
+        if (this.size() < this.maxHandSize) {
+            super.add(card);
         }
     }
 
     public Card removeCard(int index) {
-        if (!this.cards.isEmpty()) {
-            return this.cards.remove(index);
+        if (!this.isEmpty()) {
+            return super.remove(index);
         }
         return null;
     }
 
     public Card getCard(int index) {
-        if (index < 0 || index >= this.cards.size()) {
-            return cards.get(index);
+        if (index >= 0 && index < this.size()) {
+            return this.get(index);
         }
         return null;
     }
