@@ -44,9 +44,9 @@ public class Controller implements IController
     public void update()
     {
         ArrayList<Player> players = this.model.getPlayers();
-
         boolean isFinished = true;
 
+        // Checks every player's hand and deck, ensuring that if ALL of them are empty, then the game is finished.
         for (Player player : players) {
             Deck deck = player.getDeck();
             Hand hand = player.getHand();
@@ -56,9 +56,11 @@ public class Controller implements IController
             }
         }
 
+        // Sets the finished flag to true if the above criteria is met
         this.model.setFinished(isFinished);
 
         if (isFinished) {
+            // If the game is finished, do a linear search and find the player ID with the highest points
             int highestPoints = 0;
             int highestPlayerID = 0;
             for (Player player : players) {
@@ -67,13 +69,16 @@ public class Controller implements IController
                     highestPlayerID = player.playerID;
                 }
             }
+            // Send a feedback message to all players, alerting them of the winning player ID
             for (Player player : players) {
                 view.feedbackToUser(player.playerID, "Player " + (highestPlayerID + 1) + " has won with a total number of " + highestPoints + " points.");
             }
         } else {
             if (model.getIterations() >= players.size()) {
+                // If the number of passes is equal to the total number of players, the current round is finished
                 model.setIterations(0);
 
+                // This section does a linear search and finds the player ID who has the highest numbered card
                 int highestNumber = 0;
                 int highestPlayerID = 0;
                 for (Player player : players) {
@@ -82,9 +87,13 @@ public class Controller implements IController
                         highestPlayerID = player.playerID;
                     }
                 }
+
+                // Awards the player who played the highest numbered card one point and sets the current starting player to them
                 players.get(highestPlayerID).playerPoints += 1;
                 model.setCurrentPlayer(highestPlayerID);
 
+                // Makes all players draw an additional card to top up their hand
+                // Resets the current card played for the next round
                 for (Player player: players) {
                     player.drawCard();
                     player.currentCardPlayed = null;
@@ -92,6 +101,7 @@ public class Controller implements IController
             }
         }
 
+        // Refreshes the UI so a new hand and points are displayed for each player
         view.refreshView();
     }
 
@@ -100,27 +110,37 @@ public class Controller implements IController
         ArrayList<Player> players = this.model.getPlayers();
         int currentPlayer = this.model.getCurrentPlayer();
 
+        // If the game is finished, reject the input
         if (model.hasFinished()) {
             return;
         }
 
+        // If anyone but the current player tries to play a card, reject the input and send a feedback message
         if (currentPlayer != playerNum) {
             view.feedbackToUser(playerNum, "It is not your turn.");
             return;
         }
 
+        // Gets the current player and their hand
         Player player = players.get(playerNum);
         Hand hand = player.getHand();
 
+        // If index of the hand is outside the bounds of the array, reject the input
+        // This should already be enforced by the regex in view, but good to have nonetheless
         if (!(handNum >= 0 && handNum < hand.maxHandSize)) {
             return;
         }
 
+        // If index is valid but card does not exist, then reject the input and send a feedback message
         if (hand.getCard(handNum) == null) {
             view.feedbackToUser(playerNum, "Card " + handNum + " is not in your hand, please enter a valid card in your hand.");
             return;
         }
 
+        // Set the current card played by the player to the card in their hand that they selected
+        // Removes the card from the player's hand and sets the current player to the next in the list
+        // By using the '%' operator, this guarantees the current player will be in the range [0-maxPlayers]
+        // Increments the iterations/passes to track the round's status and to judge when the round will end
         player.currentCardPlayed = hand.removeCard(handNum);
         model.setCurrentPlayer((currentPlayer + 1) % players.size());
         model.setIterations(model.getIterations() + 1);
