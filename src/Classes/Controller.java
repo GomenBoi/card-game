@@ -68,7 +68,7 @@ public class Controller implements IController
                 }
             }
             for (Player player : players) {
-                view.feedbackToUser(player.playerID, "Player " + highestPlayerID + " has won with a total number of " + highestPoints + " points.");
+                view.feedbackToUser(player.playerID, "Player " + (highestPlayerID + 1) + " has won with a total number of " + highestPoints + " points.");
             }
         } else {
             if (model.getIterations() >= players.size()) {
@@ -105,6 +105,7 @@ public class Controller implements IController
         }
 
         if (currentPlayer != playerNum) {
+            view.feedbackToUser(playerNum, "It is not your turn.");
             return;
         }
 
@@ -116,6 +117,7 @@ public class Controller implements IController
         }
 
         if (hand.getCard(handNum) == null) {
+            view.feedbackToUser(playerNum, "Card " + handNum + " is not in your hand, please enter a valid card in your hand.");
             return;
         }
 
