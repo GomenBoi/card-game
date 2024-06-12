@@ -11,7 +11,7 @@ public class Deck extends Stack<Card>
         super();
 
         for (int index = 0; index < deckSize; index++) {
-            Card card = new Card(index);
+            Card card = new Card(index + 1);
             this.push(card);
         }
 
