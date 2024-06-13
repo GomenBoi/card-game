@@ -15,6 +15,7 @@ public class View implements IView
     private IController controller;
     private IModel model;
 
+    // Initialises the input thread
     public void initialise(IModel model, IController controller) {
         this.controller = controller;
         this.model = model;
@@ -22,6 +23,10 @@ public class View implements IView
         new Thread(this::setupPlayers).start();
     }
 
+    // Refreshes the UI based on the current information stored in the players array
+    // If the game has finished, display restart and exit
+    // If game has not finished, display information about points, current card played, deck size and hand
+    // Moreover, display restart, exit and playing a card commands onto the screen
     public void refreshView() {
         ArrayList<Player> players = this.model.getPlayers();
 
@@ -57,6 +62,11 @@ public class View implements IView
         }
     }
 
+    // Input thread runs as a while true loop, taking in:
+    // E/e: Exits the program
+    // The regex '^[1-5]:[1:5]$' matches an exact string such that the first and third characters are [1-5] inclusive joined by a ':'.
+    // R/r: Restarts the game and resets variables
+    // Otherwise: Return an error message, prompting the user to try again.
     public void setupPlayers() {
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -88,6 +98,7 @@ public class View implements IView
         }
     }
 
+    // Sends a feedback message addressed to the player with attached message
     public void feedbackToUser(int player, String message) {
         System.out.println("Message to player " + (player + 1) + ": " + message);
     }

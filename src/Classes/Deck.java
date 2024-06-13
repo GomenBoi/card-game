@@ -3,10 +3,12 @@ package Classes;
 import java.util.Collections;
 import java.util.Stack;
 
+// Wrapper class for stack class
 public class Deck extends Stack<Card>
 {
     public int maxDeckSize;
 
+    // Constructs a stack of cards based on the length of the deck size, such that every card is numbered from [1-deckSize]
     public Deck(int deckSize) {
         super();
 
@@ -18,6 +20,7 @@ public class Deck extends Stack<Card>
         this.maxDeckSize = deckSize;
     }
 
+    // Shuffles the deck randomly
     public void shuffle() {
         Collections.shuffle(this);
     }
