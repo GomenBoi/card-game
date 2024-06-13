@@ -9,7 +9,6 @@ public class Hand extends ArrayList<Card>
 
     // Initialises the arraylist and sets the max hand size
     public Hand(int handSize) {
-        super();
         this.maxHandSize = handSize;
     }
 

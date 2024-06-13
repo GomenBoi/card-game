@@ -26,7 +26,7 @@ public class Controller implements IController
         // Loops over every player to initialise their deck and hand
         // Shuffles the deck and fills up the player's hand with the max number of cards allowed
         for (Player player : players) {
-            player.initialise(5, 2);
+            player.initialise(52, 5);
             Deck deck = player.getDeck();
             Hand hand = player.getHand();
             deck.shuffle();
