@@ -19,7 +19,7 @@
 
 ## Customisation 
 - By default, the controller will run the text view, but I have implemented a small GUI view.
-  - By replacing the line:
+  - To do this, replace the line in the controller main method where:
              
         IView view = new View();
   - by:
