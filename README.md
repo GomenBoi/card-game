@@ -16,3 +16,14 @@
 - **Import** the project onto your IDE (IntelliJ, Eclipse, VSCode, etc.)
 - **Navigate** to the main method on the **Controller** class and run it
 - The program should then start running, follow the instructions displayed.
+
+## Customisation 
+- By default, the controller will run the text view, but I have implemented a small GUI view.
+  - By replacing the line:
+             
+        IView view = new View();
+  - by:
+
+        IView view = new GUI();
+- I might make a small text UI which allows you to enter the number of players and type of UI you want. 
+- This may also allow you to select AIs for each player as well.

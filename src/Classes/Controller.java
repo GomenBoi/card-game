@@ -185,7 +185,10 @@ public class Controller implements IController
     public static void main(String[] args) {
         IController controller = new Controller();
         IModel model = new Model();
+        // Text View
         IView view = new View();
+        // GUI View
+        //IView view = new GUI();
 
         model.initialise(5);
         controller.initialise(model, view);
