@@ -4,6 +4,7 @@ import Interfaces.IController;
 import Interfaces.IModel;
 import Interfaces.IView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Controller implements IController
@@ -25,7 +26,7 @@ public class Controller implements IController
         // Loops over every player to initialise their deck and hand
         // Shuffles the deck and fills up the player's hand with the max number of cards allowed
         for (Player player : players) {
-            player.initialise(52, 5);
+            player.initialise(5, 2);
             Deck deck = player.getDeck();
             Hand hand = player.getHand();
             deck.shuffle();
@@ -34,11 +35,59 @@ public class Controller implements IController
             }
         }
 
+        sendStartingMessages(players);
+
         // Sets the current player to the first player, sets the finished flag start the game and refreshes the UI
         this.model.setCurrentPlayer(0);
         this.model.setFinished(false);
+        this.model.setIterations(0);
 
         this.view.refreshView();
+    }
+
+    private void sendStartingMessages(ArrayList<Player> players) {
+        for (Player player : players) {
+            if (model.getCurrentPlayer() != player.playerID) {
+                view.feedbackToUser(player.playerID, "Player " + (player.playerID + 1) + ", it is not your turn.");
+            } else {
+                view.feedbackToUser(player.playerID, "Player " + (player.playerID + 1) + ", it is your turn. Please play a card.");
+            }
+        }
+    }
+
+    private int awardHighestCard(ArrayList<Player> players) {
+        // This section does a linear search and finds the player ID who has the highest numbered card.
+        // Initial values set to -1 as this is when no one has played any card.
+        // This state should not be reachable as the game should have ended BEFORE the game can get to this state.
+        // This function will return -1 if such state is reached.
+        int highestNumber = -1;
+        int highestPlayerID = -1;
+        for (Player player : players) {
+            if (player.currentCardPlayed != null) {
+                if (player.currentCardPlayed.getNumber() > highestNumber) {
+                    highestNumber = player.currentCardPlayed.getNumber();
+                    highestPlayerID = player.playerID;
+                }
+            }
+        }
+
+        // Awards the player who played the highest numbered card one point and sets the current starting player to them
+        players.get(highestPlayerID).playerPoints += 1;
+
+        return highestPlayerID;
+    }
+
+    // Gets the player with highest points with a linear search and returns the ID of the highest player
+    private int getHighestPoints(ArrayList<Player> players) {
+        int highestPoints = 0;
+        int highestPlayerID = 0;
+        for (Player player : players) {
+            if (player.playerPoints > highestPoints) {
+                highestPoints = player.playerPoints;
+                highestPlayerID = player.playerID;
+            }
+        }
+        return highestPlayerID;
     }
 
     public void update()
@@ -60,36 +109,20 @@ public class Controller implements IController
         this.model.setFinished(isFinished);
 
         if (isFinished) {
+            // Do one last count of who won the last round to award the final points
+            awardHighestCard(players);
             // If the game is finished, do a linear search and find the player ID with the highest points
-            int highestPoints = 0;
-            int highestPlayerID = 0;
-            for (Player player : players) {
-                if (player.playerPoints > highestPoints) {
-                    highestPoints = player.playerPoints;
-                    highestPlayerID = player.playerID;
-                }
-            }
+            int highestPlayerID = getHighestPoints(players);
             // Send a feedback message to all players, alerting them of the winning player ID
             for (Player player : players) {
-                view.feedbackToUser(player.playerID, "Player " + (highestPlayerID + 1) + " has won with a total number of " + highestPoints + " points.");
+                view.feedbackToUser(player.playerID, "Player " + (highestPlayerID + 1) + " has won with a total number of " + players.get(highestPlayerID).playerPoints + " points.");
             }
         } else {
             if (model.getIterations() >= players.size()) {
                 // If the number of passes is equal to the total number of players, the current round is finished
                 model.setIterations(0);
 
-                // This section does a linear search and finds the player ID who has the highest numbered card
-                int highestNumber = 0;
-                int highestPlayerID = 0;
-                for (Player player : players) {
-                    if (player.currentCardPlayed.getNumber() > highestNumber) {
-                        highestNumber = player.currentCardPlayed.getNumber();
-                        highestPlayerID = player.playerID;
-                    }
-                }
-
-                // Awards the player who played the highest numbered card one point and sets the current starting player to them
-                players.get(highestPlayerID).playerPoints += 1;
+                int highestPlayerID = awardHighestCard(players);
                 model.setCurrentPlayer(highestPlayerID);
 
                 // Makes all players draw an additional card to top up their hand
@@ -99,6 +132,7 @@ public class Controller implements IController
                     player.currentCardPlayed = null;
                 }
             }
+            sendStartingMessages(players);
         }
 
         // Refreshes the UI so a new hand and points are displayed for each player
@@ -133,7 +167,7 @@ public class Controller implements IController
 
         // If index is valid but card does not exist, then reject the input and send a feedback message
         if (hand.getCard(handNum) == null) {
-            view.feedbackToUser(playerNum, "Card " + handNum + " is not in your hand, please enter a valid card in your hand.");
+            view.feedbackToUser(playerNum, "Card " + (handNum + 1) + " is not in your hand, please enter a valid card in your hand.");
             return;
         }
 
