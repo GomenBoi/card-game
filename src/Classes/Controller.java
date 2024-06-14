@@ -77,7 +77,7 @@ public class Controller implements IController
         return highestPlayerID;
     }
 
-    // Gets the player with highest points with a linear search and returns the ID of the highest player
+    // Gets the player with the highest points with a linear search and returns the ID of the highest player
     private int getHighestPoints(ArrayList<Player> players) {
         int highestPoints = 0;
         int highestPlayerID = 0;
