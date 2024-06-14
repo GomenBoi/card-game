@@ -4,7 +4,6 @@ import Interfaces.IController;
 import Interfaces.IModel;
 import Interfaces.IView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Controller implements IController
@@ -35,12 +34,12 @@ public class Controller implements IController
             }
         }
 
-        sendStartingMessages(players);
-
         // Sets the current player to the first player, sets the finished flag start the game and refreshes the UI
         this.model.setCurrentPlayer(0);
         this.model.setFinished(false);
         this.model.setIterations(0);
+
+        sendStartingMessages(players);
 
         this.view.refreshView();
     }
@@ -186,9 +185,9 @@ public class Controller implements IController
         IController controller = new Controller();
         IModel model = new Model();
         // Text View
-        IView view = new View();
+        //IView view = new View();
         // GUI View
-        //IView view = new GUI();
+        IView view = new GUI();
 
         model.initialise(5);
         controller.initialise(model, view);
