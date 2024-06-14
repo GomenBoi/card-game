@@ -185,9 +185,9 @@ public class Controller implements IController
         IController controller = new Controller();
         IModel model = new Model();
         // Text View
-        //IView view = new View();
+        IView view = new View();
         // GUI View
-        IView view = new GUI();
+        //IView view = new GUI();
 
         model.initialise(5);
         controller.initialise(model, view);
