@@ -1,5 +1,6 @@
 package Classes;
 
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 public class Player
@@ -7,6 +8,7 @@ public class Player
     public Card currentCardPlayed;
     public int playerPoints;
     public int playerID;
+    public ArrayList<Card> cardsPlayed;
     private Deck deck;
     private Hand hand;
 
@@ -26,6 +28,7 @@ public class Player
     public void initialise(int deckSize, int handSize) {
         this.deck = new Deck(deckSize);
         this.hand = new Hand(handSize);
+        this.cardsPlayed = new ArrayList<>();
         this.playerPoints = 0;
         this.currentCardPlayed = null;
     }
@@ -40,6 +43,11 @@ public class Player
         } catch (EmptyStackException e) {
             System.out.println("Empty deck, cannot draw a card.");
         }
+    }
+
+    public void playCard(int handNum) {
+        this.currentCardPlayed = hand.removeCard(handNum);
+        cardsPlayed.add(this.currentCardPlayed);
     }
 
     // Getter for deck

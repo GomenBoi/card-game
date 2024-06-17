@@ -174,7 +174,7 @@ public class Controller implements IController
         // Removes the card from the player's hand and sets the current player to the next in the list
         // By using the '%' operator, this guarantees the current player will be in the range [0-maxPlayers]
         // Increments the iterations/passes to track the round's status and to judge when the round will end
-        player.currentCardPlayed = hand.removeCard(handNum);
+        player.playCard(handNum);
         model.setCurrentPlayer((currentPlayer + 1) % players.size());
         model.setIterations(model.getIterations() + 1);
 
