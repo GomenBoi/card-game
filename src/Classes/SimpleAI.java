@@ -20,7 +20,7 @@ public class SimpleAI{
 
         Card currentCard = hand.getCard(handNum);
 
-        // If player 5 were to make an assisted move, if the card number is higher than all other cards, the function will by default return 1.0 (guaranteed win).
+        // If the final player were to make an assisted move, if the card number is higher than all other cards, the function will by default return 1.0 (guaranteed win).
         double cardProbability = 1.0;
 
         // Iterate over every player
