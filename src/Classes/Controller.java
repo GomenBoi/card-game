@@ -181,6 +181,66 @@ public class Controller implements IController
         this.update();
     }
 
+    public void doAutomatedMove(int playerNum) {
+        ArrayList<Player> players = this.model.getPlayers();
+        int currentPlayer = this.model.getCurrentPlayer();
+        SimpleAI aiHelper = new SimpleAI(this.model);
+
+        // If the game is finished, reject the input
+        if (model.hasFinished()) {
+            return;
+        }
+
+        // If anyone but the current player tries to play a card, reject the input and send a feedback message
+        if (currentPlayer != playerNum) {
+            view.feedbackToUser(playerNum, "It is not your turn.");
+            return;
+        }
+
+        // Gets the current player and their hand
+        Player player = players.get(playerNum);
+        Hand hand = player.getHand();
+        Deck deck = player.getDeck();
+
+        double highestProbability = 0.0;
+        int bestCard = 0;
+
+        for (int handNum = 0; handNum < hand.size(); handNum++) {
+            double currentProbability = aiHelper.calculateProbability(playerNum, handNum);
+            if (currentProbability >= highestProbability) {
+                if (currentProbability == highestProbability) {
+                    // If the highest probability and current probability are equal, pick the card with the lowest number
+                    if (hand.getCard(handNum).getNumber() < hand.getCard(bestCard).getNumber()) {
+                        bestCard = handNum;
+                    }
+                } else {
+                    // If current probability is higher than the highest probability, select it to be the best card
+                    highestProbability = currentProbability;
+                    bestCard = handNum;
+                }
+            }
+        }
+
+        // If no card in current hand can win, pick the smallest card to minimise loss
+        if (highestProbability <= 0.0) {
+            int lowestCard = 0;
+            int lowestNumber = deck.maxDeckSize;
+            for (Card card : hand) {
+                if (card.getNumber() < lowestNumber) {
+                    lowestNumber = card.getNumber();
+                    lowestCard = hand.indexOf(card);
+                }
+            }
+            bestCard = lowestCard;
+        }
+
+        player.playCard(bestCard);
+        model.setCurrentPlayer((currentPlayer + 1) % players.size());
+        model.setIterations(model.getIterations() + 1);
+
+        this.update();
+    }
+
     public static void main(String[] args) {
         IController controller = new Controller();
         IModel model = new Model();

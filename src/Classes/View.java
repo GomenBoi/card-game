@@ -59,6 +59,7 @@ public class View implements IView
             System.out.println("[E] -> Exiting the program");
             System.out.println("[R] -> Restarting the game");
             System.out.println("[(Player Number):(Card Number)] -> Playing a card");
+            System.out.println("[(Player Number)] -> Do automated move");
         }
     }
 
@@ -74,22 +75,31 @@ public class View implements IView
             try {
                 String input = in.nextLine();
 
-                Pattern pattern = Pattern.compile("^[1-5]:[1-5]$");
-                Matcher matcher = pattern.matcher(input);
-                boolean matchFound = matcher.find();
+                Pattern selectPlayerHandPattern = Pattern.compile("^[1-5]:[1-5]$");
+                Matcher selectPlayerHandMatcher = selectPlayerHandPattern.matcher(input);
+                boolean selectPlayerHandFound = selectPlayerHandMatcher.find();
+
+                Pattern selectPlayerPattern = Pattern.compile("^[1-5]$");
+                Matcher selectPlayerMatcher = selectPlayerPattern.matcher(input);
+                boolean selectPlayerMatchFound = selectPlayerMatcher.find();
 
                 if (input.toLowerCase().compareTo("e") == 0) {
                     System.exit(0);
-                } else if (matchFound) {
+                }
+                else if (input.toLowerCase().compareTo("r") == 0) {
+                    controller.startup();
+                } else if (selectPlayerHandFound) {
                     String[] parameters = input.split(":");
 
                     int playerNumber = Integer.parseInt(parameters[0]);
                     int handNumber = Integer.parseInt(parameters[1]);
 
                     controller.playCard(playerNumber - 1, handNumber - 1);
-                } else if (input.toLowerCase().compareTo("r") == 0) {
-                    controller.startup();
-                } else {
+                } else if (selectPlayerMatchFound) {
+                    int playerNumber = Integer.parseInt(input);
+
+                    controller.doAutomatedMove(playerNumber - 1);
+                }else {
                     System.out.println("Sorry, the input you entered is invalid. Please try again.");
                 }
             } catch (Exception e) {

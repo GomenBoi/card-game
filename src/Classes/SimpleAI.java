@@ -61,4 +61,5 @@ public class SimpleAI{
 
         return cardProbability;
     }
+
 }
