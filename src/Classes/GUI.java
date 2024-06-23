@@ -135,9 +135,18 @@ public class GUI implements IView {
 
             outerPanel.add(innerGrid, BorderLayout.CENTER);
 
+            JPanel lowerPanel = new JPanel();
+            lowerPanel.setLayout(new GridLayout(2, 1));
+
             JButton restartButton = new JButton("Restart");
             restartButton.addActionListener(e -> {controller.startup();});
-            outerPanel.add(restartButton, BorderLayout.SOUTH);
+            lowerPanel.add(restartButton);
+
+            JButton aiButton = new JButton("Do automated move");
+            aiButton.addActionListener(e -> {controller.doAutomatedMove(player.playerID);});
+            lowerPanel.add(aiButton);
+
+            outerPanel.add(lowerPanel, BorderLayout.SOUTH);
 
             // Adds the outer frame to the window frame and sets it to visible
             frame.getContentPane().add(outerPanel);
