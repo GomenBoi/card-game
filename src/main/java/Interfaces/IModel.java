@@ -1,6 +1,7 @@
 package Interfaces;
 
-import Classes.*;
+import Classes.Player;
+
 import java.util.ArrayList;
 
 public interface IModel

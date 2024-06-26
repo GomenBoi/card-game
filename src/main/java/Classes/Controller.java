@@ -1,8 +1,6 @@
 package Classes;
 
-import Interfaces.IController;
-import Interfaces.IModel;
-import Interfaces.IView;
+import Interfaces.*;
 
 import java.util.ArrayList;
 
