@@ -63,7 +63,13 @@ public class AcceptanceTests {
             try {
                 controller.playCard(0, 1);
             } catch (Exception e) {
-                fail("Exception thrown when playing valid move.");
+                fail("Exception thrown when playing valid move for player 1.");
+            }
+
+            try {
+                controller.playCard(1, 1);
+            } catch (Exception e) {
+                fail("Exception thrown when playing valid move for player 2.");
             }
         }
 
@@ -83,7 +89,13 @@ public class AcceptanceTests {
             try {
                 controller.doAutomatedMove(0);
             } catch (Exception e) {
-                fail("Exception thrown when playing valid move.");
+                fail("Exception thrown when playing valid automated move for player 1");
+            }
+
+            try {
+                controller.doAutomatedMove(1);
+            } catch (Exception e) {
+                fail("Exception thrown when playing valid automated move for player 2.");
             }
         }
     }
