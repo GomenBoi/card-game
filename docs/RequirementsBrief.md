@@ -1,6 +1,6 @@
 # Requirements Brief
 - You need to provide a design for a program to allow two or more players to play a card game on the computer. 
-- Each player may be either a human or an AI. 
+- Each player may either play an automated move or their own move.
 - Assume that each player has their own deck of 52 cards, numbered 1 to 52. 
 - At the beginning of the game, each deck is shuffled. 
 - Each player has a ‘hand’ of cards, a collection of cards that they are ‘holding’ and are ready to play. 
@@ -13,4 +13,3 @@
 - Play continues until each player has played all 52 of their cards. At the end of the game, the player with the most points wins.
 - UI must display the current hand of a player and the points they have won so far.
 - If player is AI, they must be able to make the best move based on all possible outcomes.
-- There should be an option for a spectator for be notified of what card has been played.
