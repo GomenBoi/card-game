@@ -1,12 +1,15 @@
-import Classes.Model;
+import Classes.*;
 
 import Interfaces.*;
 
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +40,51 @@ public class AcceptanceTests {
 
             assertNull(model.getPlayers());
             assertFalse(model.hasFinished());
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests to test whether player can make moves")
+    class testCanMakeMove
+    {
+        @Test
+        @DisplayName("2.1: Test player can make their own move")
+        void testNormalMove() {
+            IModel model = new Model();
+            IController controller = new Controller();
+            IView view = new View();
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            try {
+                controller.playCard(0, 1);
+            } catch (Exception e) {
+                fail("Exception thrown when playing valid move.");
+            }
+        }
+
+        @Test
+        @DisplayName("2.2: Test player can make automated move")
+        void testAutomatedMove() {
+            IModel model = new Model();
+            IController controller = new Controller();
+            IView view = new View();
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            try {
+                controller.doAutomatedMove(0);
+            } catch (Exception e) {
+                fail("Exception thrown when playing valid move.");
+            }
         }
     }
 
