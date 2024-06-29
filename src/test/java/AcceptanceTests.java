@@ -2,6 +2,7 @@ import Classes.*;
 
 import Interfaces.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Nested;
@@ -9,14 +10,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AcceptanceTests {
+
+    IModel model;
+    IController controller;
+    IView view;
+
+    @BeforeEach
+    void setupMVC() {
+        model = new Model();
+        controller = new Controller();
+        view = new View();
+    }
 
     @Nested
     @DisplayName("Tests to test the possible number of players")
@@ -26,7 +36,6 @@ public class AcceptanceTests {
         @DisplayName("1.0: Test valid number of people can play")
         @ValueSource(ints = {2, 3, 4})
         void testValidPlayers(int numPlayers) {
-            IModel model = new Model();
             model.initialise(numPlayers);
 
             assertNotNull(model.getPlayers());
@@ -38,7 +47,6 @@ public class AcceptanceTests {
         @DisplayName("1.1: Test invalid number of people can play")
         @ValueSource(ints = {0, 1, -1, Integer.MIN_VALUE})
         void testInvalidPlayers(int numPlayers) {
-            IModel model = new Model();
             model.initialise(numPlayers);
 
             assertNull(model.getPlayers());
@@ -53,10 +61,6 @@ public class AcceptanceTests {
         @Test
         @DisplayName("2.1: Test player can make their own move")
         void testNormalMove() {
-            IModel model = new Model();
-            IController controller = new Controller();
-            IView view = new View();
-
             model.initialise(2);
             controller.initialise(model, view);
             view.initialise(model, controller);
@@ -79,10 +83,6 @@ public class AcceptanceTests {
         @Test
         @DisplayName("2.2: Test player can make automated move")
         void testAutomatedMove() {
-            IModel model = new Model();
-            IController controller = new Controller();
-            IView view = new View();
-
             model.initialise(2);
             controller.initialise(model, view);
             view.initialise(model, controller);
@@ -110,10 +110,6 @@ public class AcceptanceTests {
         @Test
         @DisplayName("3.1: Test player has deck")
         void testHasDeck() {
-            IModel model = new Model();
-            IController controller = new Controller();
-            IView view = new View();
-
             model.initialise(2);
             controller.initialise(model, view);
             view.initialise(model, controller);
@@ -126,10 +122,6 @@ public class AcceptanceTests {
         @Test
         @DisplayName("3.2: Test player's deck size")
         void testDeckSize() {
-            IModel model = new Model();
-            IController controller = new Controller();
-            IView view = new View();
-
             model.initialise(2);
             controller.initialise(model, view);
             view.initialise(model, controller);
@@ -148,10 +140,6 @@ public class AcceptanceTests {
         @Test
         @DisplayName("3.3: Test player's deck is shuffled")
         void testDeckShuffle() {
-            IModel model = new Model();
-            IController controller = new Controller();
-            IView view = new View();
-
             model.initialise(2);
             controller.initialise(model, view);
             view.initialise(model, controller);
