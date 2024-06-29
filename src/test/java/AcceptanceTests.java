@@ -10,6 +10,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,6 +101,78 @@ public class AcceptanceTests {
                 fail("Exception thrown when playing valid automated move for player 2.");
             }
         }
+    }
+
+    @Nested
+    @DisplayName("Tests to test functionality of a player's deck")
+    class testDeck {
+
+        @Test
+        @DisplayName("3.1: Test player has deck")
+        void testHasDeck() {
+            IModel model = new Model();
+            IController controller = new Controller();
+            IView view = new View();
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            for (Player player : model.getPlayers()) {
+                assertNotNull(player.getDeck());
+            }
+        }
+
+        @Test
+        @DisplayName("3.2: Test player's deck size")
+        void testDeckSize() {
+            IModel model = new Model();
+            IController controller = new Controller();
+            IView view = new View();
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            for (Player player : model.getPlayers()) {
+                Deck deck = player.getDeck();
+
+                assertEquals(52, deck.size());
+                for (Card card : deck) {
+                    int cardNumber = card.getNumber();
+                    assertTrue(cardNumber > 0 && cardNumber <= 52);
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("3.3: Test player's deck is shuffled")
+        void testDeckShuffle() {
+            IModel model = new Model();
+            IController controller = new Controller();
+            IView view = new View();
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            // Create new list of integers [1-52] inclusive
+            List<Integer> listIntegers = IntStream.rangeClosed(1, 52).boxed().toList();
+            listIntegers.forEach(System.out::println);
+            for (Player player : model.getPlayers()) {
+                Deck deck = player.getDeck();
+                // Convert deck (Stack<Card> into List<Integer> using .stream and .map functions)
+                List<Integer> list = deck.stream().map(Card::getNumber).toList();
+                // If the current list of integers from the deck is equal to the default list of integers, the deck has not been shuffled
+                if (listIntegers.equals(list)) {
+                    fail("Deck has not been shuffled.");
+                }
+            }
+
+        }
+
     }
 
 
