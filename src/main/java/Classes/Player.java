@@ -59,4 +59,14 @@ public class Player
     public Hand getHand() {
         return this.hand;
     }
+
+    // Setter for deck
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    // Setter for hand
+    public void setHand(Hand hand) {
+        this.hand = hand;
+    }
 }
