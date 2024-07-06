@@ -148,7 +148,6 @@ public class AcceptanceTests {
 
             // Create new list of integers [1-52] inclusive
             List<Integer> listIntegers = IntStream.rangeClosed(1, 52).boxed().toList();
-            listIntegers.forEach(System.out::println);
             for (Player player : model.getPlayers()) {
                 Deck deck = player.getDeck();
                 // Convert deck (Stack<Card> into List<Integer> using .stream and .map functions)
