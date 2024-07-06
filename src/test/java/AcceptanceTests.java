@@ -106,7 +106,6 @@ public class AcceptanceTests {
     @Nested
     @DisplayName("Tests to test functionality of a player's deck")
     class testDeck {
-
         @Test
         @DisplayName("3.1: Test player has deck")
         void testHasDeck() {
@@ -157,9 +156,37 @@ public class AcceptanceTests {
                     fail("Deck has not been shuffled.");
                 }
             }
+        }
+    }
 
+    @Nested
+    @DisplayName("Test functionality of player's hand")
+    class testHand {
+        @Test
+        @DisplayName("4.1: Test player has hand")
+        void testHasHand() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            for (Player player : model.getPlayers()) {
+                assertNotNull(player.getHand());
+            }
         }
 
+        @Test
+        @DisplayName("4.2: Test player draws 5 cards")
+        void testDrawsCards() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            for (Player player : model.getPlayers()) {
+                assertEquals(5, player.getHand().size());
+            }
+        }
     }
 
 
