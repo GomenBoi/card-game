@@ -17,8 +17,8 @@
 # Requirements Testing Table
 | ReqID | Name                                         | Description                                                                                                                                |
 |-------|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| 1.0   | Test valid number of people can play         | The design must allow for 2 or more players to play the card game.                                                                         |
-| 1.1   | Test invalid number of people can play       | The design must not allow for 1 person or less to play.                                                                                    |
+| 1.1   | Test valid number of people can play         | The design must allow for 2 or more players to play the card game.                                                                         |
+| 1.2   | Test invalid number of people can play       | The design must not allow for 1 person or less to play.                                                                                    |
 | 2.1   | Test player can make their own move          | Each player must be able to make their own move.                                                                                           | 
 | 2.2   | Test player can make automated move          | Each player must be able to make an automated move.                                                                                        |
 | 3.1   | Test player has deck                         | Each player must have a deck.                                                                                                              |
