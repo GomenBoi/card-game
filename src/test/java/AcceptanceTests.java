@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -29,11 +30,11 @@ public class AcceptanceTests {
     }
 
     @Nested
-    @DisplayName("Tests to test the possible number of players")
+    @DisplayName("1. Tests to test the possible number of players")
     class testNumPlayers
     {
         @ParameterizedTest
-        @DisplayName("1.0: Test valid number of people can play")
+        @DisplayName("1.1: Test valid number of people can play")
         @ValueSource(ints = {2, 3, 4})
         void testValidPlayers(int numPlayers) {
             model.initialise(numPlayers);
@@ -44,7 +45,7 @@ public class AcceptanceTests {
         }
 
         @ParameterizedTest
-        @DisplayName("1.1: Test invalid number of people can play")
+        @DisplayName("1.2: Test invalid number of people can play")
         @ValueSource(ints = {0, 1, -1, Integer.MIN_VALUE})
         void testInvalidPlayers(int numPlayers) {
             model.initialise(numPlayers);
@@ -55,7 +56,7 @@ public class AcceptanceTests {
     }
 
     @Nested
-    @DisplayName("Tests to test whether player can make moves")
+    @DisplayName("2. Tests to test whether player can make moves")
     class testCanMakeMove
     {
         @Test
@@ -104,7 +105,7 @@ public class AcceptanceTests {
     }
 
     @Nested
-    @DisplayName("Tests to test functionality of a player's deck")
+    @DisplayName("3. Tests to test functionality of a player's deck")
     class testDeck {
         @Test
         @DisplayName("3.1: Test player has deck")
@@ -160,7 +161,7 @@ public class AcceptanceTests {
     }
 
     @Nested
-    @DisplayName("Test functionality of player's hand")
+    @DisplayName("4. Test functionality of player's hand")
     class testHand {
         @Test
         @DisplayName("4.1: Test player has hand")
@@ -189,5 +190,98 @@ public class AcceptanceTests {
         }
     }
 
+    @Nested
+    @DisplayName("5. Test logic of cards played in current round")
+    class testCardRoundLogic {
+        @Test
+        @DisplayName("5.1: Test highest numbered card wins")
+        void testHighCardWins() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
 
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            int playerTwoPoints = playerTwo.playerPoints;
+
+            // Create new hand and add pre-set cards for testing
+            Hand newHandOne = new Hand(52);
+            newHandOne.addCard(new Card(1));
+
+            Hand newHandTwo = new Hand(52);
+            newHandTwo.addCard(new Card(20));
+
+            // Set the player 1's hand to only having 1 and set player's 2 to only have 2 cards
+            playerOne.setHand(newHandOne);
+            playerTwo.setHand(newHandTwo);
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+
+            assertEquals(playerTwoPoints + 1, playerTwo.playerPoints);
+        }
+
+        @Test
+        @DisplayName("5.2: Test played cards are removed from hand")
+        void testCardRemoved() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            for (Player player : model.getPlayers()) {
+                Card card = player.getHand().getCard(0);
+                controller.playCard(player.playerID, 0);
+                assertFalse(player.getHand().contains(card) || player.getDeck().contains(card));
+            }
+        }
+
+        @Test
+        @DisplayName("5.3: Test all players draw another card from deck")
+        void testAllPlayersDraw() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+
+            assertEquals(5, playerOne.getHand().size());
+            assertEquals(5, playerTwo.getHand().size());
+            assertEquals(46, playerOne.getDeck().size());
+            assertEquals(46, playerTwo.getDeck().size());
+        }
+
+        @Test
+        @DisplayName("5.4: Test player can't draw card from deck")
+        void testPlayerCanNotDraw() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+
+            while (!playerOne.getDeck().isEmpty()) {
+                controller.playCard(0, 0);
+                controller.playCard(1, 0);
+            }
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+
+            assertEquals(4, playerOne.getHand().size());
+            assertEquals(0, playerOne.getDeck().size());
+        }
+    }
 }
