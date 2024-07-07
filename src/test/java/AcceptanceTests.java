@@ -2,18 +2,13 @@ import Classes.*;
 
 import Interfaces.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -415,6 +410,70 @@ public class AcceptanceTests {
 
             assertTrue(outContent.toString().contains(expectedOutput));
             System.setOut(originalOut);
+        }
+    }
+
+    @Nested
+    @DisplayName("8. Test player text UI")
+    class testTextUI {
+        private final PrintStream originalOut = System.out;
+        private ByteArrayOutputStream outContent;
+
+        @BeforeEach
+        void setUp() {
+            outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+        }
+
+        @AfterEach
+        void tearDown() {
+            System.setOut(originalOut);
+        }
+
+        @Test
+        @DisplayName("8.1: Test UI displays hand")
+        void testDisplayHand() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            forgeHand(playerOne, new int[]{1, 2, 3, 4, 23});
+            forgeHand(playerTwo, new int[]{20, 15, 2, 8, 10});
+
+            view.refreshView();
+
+            assertTrue(outContent.toString().contains("Card 1: 1 | Card 2: 2 | Card 3: 3 | Card 4: 4 | Card 5: 23 |"));
+            assertTrue(outContent.toString().contains("Card 1: 20 | Card 2: 15 | Card 3: 2 | Card 4: 8 | Card 5: 10 |"));
+        }
+
+        @Test
+        @DisplayName("8.2: Test UI displays points")
+        void testDisplayPoints() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            assertTrue(outContent.toString().contains("Player 1's current points: 0"));
+            assertTrue(outContent.toString().contains("Player 2's current points: 0"));
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            forgeHand(playerOne, new int[]{1});
+            forgeHand(playerTwo, new int[]{20});
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+
+            assertTrue(outContent.toString().contains("Player 1's current points: 0"));
+            assertTrue(outContent.toString().contains("Player 2's current points: 1"));
         }
     }
 }
