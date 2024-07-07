@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -27,6 +26,14 @@ public class AcceptanceTests {
         model = new Model();
         controller = new Controller();
         view = new View();
+    }
+
+    static void forgeHand(Player player, int[] handNumbers) {
+        Hand newHand = new Hand(52);
+        for (int integer : handNumbers) {
+            newHand.addCard(new Card(integer));
+        }
+        player.setHand(newHand);
     }
 
     @Nested
@@ -208,15 +215,8 @@ public class AcceptanceTests {
             int playerTwoPoints = playerTwo.playerPoints;
 
             // Create new hand and add pre-set cards for testing
-            Hand newHandOne = new Hand(52);
-            newHandOne.addCard(new Card(1));
-
-            Hand newHandTwo = new Hand(52);
-            newHandTwo.addCard(new Card(20));
-
-            // Set the player 1's hand to only having 1 and set player's 2 to only have 2 cards
-            playerOne.setHand(newHandOne);
-            playerTwo.setHand(newHandTwo);
+            forgeHand(playerOne, new int[]{1});
+            forgeHand(playerTwo, new int[]{20});
 
             controller.playCard(0, 0);
             controller.playCard(1, 0);
@@ -282,6 +282,71 @@ public class AcceptanceTests {
 
             assertEquals(4, playerOne.getHand().size());
             assertEquals(0, playerOne.getDeck().size());
+        }
+    }
+
+    @Nested
+    @DisplayName("6. Test end of round logic")
+    class testEndOfRoundLogic {
+        @Test
+        @DisplayName("6.1: Test winner is current player")
+        void testWinnerIsCurrentPlayer() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            // Create new hand and add pre-set cards for testing
+            forgeHand(playerOne, new int[]{1});
+            forgeHand(playerTwo, new int[]{20});
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+
+            // Assert that winning player is current player (player 2 should be current player)
+            assertEquals(model.getCurrentPlayer(), 1);
+        }
+
+        @Test
+        @DisplayName("6.2: Test round order from current player")
+        void testEndRoundOrder() {
+            model.initialise(4);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+            Player playerThree = model.getPlayers().get(2);
+            Player playerFour = model.getPlayers().get(3);
+
+            // Create new hand and add pre-set cards for testing
+            forgeHand(playerOne, new int[]{1});
+            forgeHand(playerTwo, new int[]{20});
+            forgeHand(playerThree, new int[]{42});
+            forgeHand(playerFour, new int[]{5});
+
+
+            controller.playCard(0, 0);
+            controller.playCard(1, 0);
+            controller.playCard(2, 0);
+            controller.playCard(3, 0);
+
+            // Play cards in order Player: 3, 4, 1, 2 and assert on each iteration
+            assertEquals(model.getCurrentPlayer(), 2);
+            controller.playCard(2, 0);
+            assertEquals(model.getCurrentPlayer(), 3);
+
+            controller.playCard(3, 0);
+            assertEquals(model.getCurrentPlayer(), 0);
+
+            controller.playCard(0, 0);
+            assertEquals(model.getCurrentPlayer(), 1);
         }
     }
 }
