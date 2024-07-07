@@ -3,9 +3,12 @@
 ## Description
 - This project uses the MVC architecture in Java to create a simple card game which involves a variable number of players using numbered cards to rack up points to determine who wins a certain round. The person who has the most amount of points wins the entire game.
 
-## Requirements
+## User Requirements
 - [Requirements Brief](docs/RequirementsBrief.md)
-- Java version: 22.0.1
+
+## System Requirements
+- [Java version: 22.0.1](https://www.oracle.com/uk/java/technologies/downloads/)
+- [Maven version: 3.9.8](https://maven.apache.org/download.cgi)
 
 ## Usage
 - **Fork** the repository
@@ -13,8 +16,12 @@
 
       git clone https://github.com/GomenBoi/card-game
 - Otherwise, simply just download the repository as a zip file using the **Code** button in green.
-- **Import** the project onto your IDE (IntelliJ, Eclipse, VSCode, etc.)
-- **Navigate** to the main method on the **Controller** class and run it
+
+- For IntelliJ users, download the Maven plugins and add **framework support** for the project.
+- Otherwise, you can run this project on command line in a few easy steps:
+  - **cd** to the directory the project is currently in
+  - **mvn clean install**
+  - **java -jar target/card-game-1.0.0.jar**
 - The program should then start running, follow the instructions displayed.
 
 ## Customisation 
@@ -25,5 +32,3 @@
   - by:
 
         IView view = new GUI();
-- I might make a small text UI which allows you to enter the number of players and type of UI you want. 
-- This may also allow you to select AIs for each player as well.
