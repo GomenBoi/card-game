@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -347,6 +351,70 @@ public class AcceptanceTests {
 
             controller.playCard(0, 0);
             assertEquals(model.getCurrentPlayer(), 1);
+        }
+    }
+
+    @Nested
+    @DisplayName("7. Test the game's logic at the start and end")
+    class testEndToEnd {
+        @Test
+        @DisplayName("7.1: Test game start to finish")
+        void testGameStartToFinish() {
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+
+            while (!model.hasFinished()) {
+                controller.playCard(0, 0);
+                controller.playCard(1, 0);
+            }
+
+            assertEquals(0, playerOne.getHand().size());
+            assertEquals(0, playerOne.getDeck().size());
+            assertEquals(0, playerTwo.getHand().size());
+            assertEquals(0, playerTwo.getDeck().size());
+        }
+
+        @Test
+        @DisplayName("7.2: Test winning player with highest points")
+        void testWinningPlayer() {
+            PrintStream originalOut = System.out;
+            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+
+            model.initialise(2);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            while (!model.hasFinished()) {
+                controller.playCard(0, 0);
+                controller.playCard(1, 0);
+            }
+
+            // Fetch max player point player
+            Player winningPlayer = null;
+            int greatestPoints = 0;
+
+            for (Player player : model.getPlayers()) {
+                if (player.playerPoints > greatestPoints) {
+                    greatestPoints = player.playerPoints;
+                    winningPlayer = player;
+                }
+            }
+
+            assertNotNull(winningPlayer);
+
+            String expectedOutput = "Player " + (winningPlayer.playerID + 1) + " has won with a total number of " + winningPlayer.playerPoints + " points.";
+
+            assertTrue(outContent.toString().contains(expectedOutput));
+            System.setOut(originalOut);
         }
     }
 }
