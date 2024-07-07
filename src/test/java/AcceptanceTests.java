@@ -476,4 +476,64 @@ public class AcceptanceTests {
             assertTrue(outContent.toString().contains("Player 2's current points: 1"));
         }
     }
+
+    @Nested
+    @DisplayName("Test automated functionality")
+    class testAutomatedFunctionality {
+        @Test
+        @DisplayName("9.1: Test AI move")
+        void testAutomatedMove() {
+            model.initialise(3);
+            controller.initialise(model, view);
+            view.initialise(model, controller);
+
+            controller.startup();
+
+            Player playerOne = model.getPlayers().get(0);
+            Player playerTwo = model.getPlayers().get(1);
+            Player playerThree = model.getPlayers().get(2);
+
+            forgeHand(playerOne, new int[]{1, 2, 3, 4, 5});
+            forgeHand(playerTwo, new int[]{20, 10, 2, 3, 4});
+            forgeHand(playerThree, new int[]{1, 5, 8, 3, 9});
+
+            controller.doAutomatedMove(0);
+            assertEquals(5, playerOne.currentCardPlayed.getNumber());
+            controller.doAutomatedMove(1);
+            assertEquals(20, playerTwo.currentCardPlayed.getNumber());
+            controller.doAutomatedMove(2);
+
+            // Player 2 wins
+            assertEquals(playerTwo.playerPoints, 1);
+
+            forgeHand(playerOne, new int[]{5, 2, 3, 4, 5});
+            forgeHand(playerTwo, new int[]{40, 10, 2, 3, 4});
+            forgeHand(playerThree, new int[]{20, 13, 8, 3, 9});
+
+            controller.doAutomatedMove(1);
+            assertEquals(40, playerTwo.currentCardPlayed.getNumber());
+
+            // Player 1 and 3 will play lowest cards to minimise loss
+            controller.doAutomatedMove(2);
+            assertEquals(3, playerThree.currentCardPlayed.getNumber());
+            controller.doAutomatedMove(0);
+
+            assertEquals(2, playerTwo.playerPoints);
+
+            forgeHand(playerOne, new int[]{1, 3, 5, 4, 5});
+            forgeHand(playerTwo, new int[]{20, 10, 2, 3, 4});
+            forgeHand(playerThree, new int[]{40, 5, 8, 3, 9});
+
+            // Player 3 will play 40 to beat 20, 1 will play lowest card to minimise loss
+            controller.doAutomatedMove(1);
+            assertEquals(20, playerTwo.currentCardPlayed.getNumber());
+
+            controller.doAutomatedMove(2);
+            assertEquals(40, playerThree.currentCardPlayed.getNumber());
+
+            controller.doAutomatedMove(0);
+
+            assertEquals(1, playerThree.playerPoints);
+        }
+    }
 }
